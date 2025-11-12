@@ -34,6 +34,7 @@ def move(direction: DirectionType.DirectionType, distance: int, velocity=75):
 def driver_control():
 
     lastpressed2= False
+    spining = False
     
     while True:
 
@@ -50,14 +51,13 @@ def driver_control():
 
         # intake
        
-        
-
-          # Right side for lever and roller
         if lastpressed2 == False and controller.buttonR1.pressing():
-            if not intake.is_spinning():
-                intake.spin(DirectionType.FORWARD, 50, PERCENT)
-            else:
-                intake.stop()
+            spining = not spining
+        if spining: 
+            intake.spin(DirectionType.FORWARD, 50, PERCENT)
+        else:
+            intake.stop()
+        
         lastpressed2= controller.buttonR1.pressing()
 
 
