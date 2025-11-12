@@ -34,11 +34,9 @@ def move(direction: DirectionType.DirectionType, distance: int, velocity=75):
 def driver_control():
 
     lastpressed2= False
-    lastpressed=False
     
     while True:
 
-        lastpressed= False
         lastpressed2= False
 
         forward = controller.axis3.position()
