@@ -1,5 +1,6 @@
 #  import everything from the vex module
 from vex import *
+import math
 
 #  intitializing the important stuff
 brain = Brain()
@@ -43,6 +44,14 @@ def driver_control():
         forward = controller.axis3.position()
         turn = controller.axis1.position()
 
+    
+
+        if -5 < forward < 5:
+            forward = 0
+            
+        if -5 < turn < 5:
+            turn = 0
+
         left_speed = forward + turn
         right_speed = forward - turn
 
@@ -53,6 +62,7 @@ def driver_control():
        
         if lastpressed2 == False and controller.buttonR1.pressing():
             spining = not spining
+
         if spining: 
             intake.spin(DirectionType.FORWARD, 50, PERCENT)
         else:
