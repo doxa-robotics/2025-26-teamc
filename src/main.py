@@ -34,12 +34,10 @@ def move(direction: DirectionType.DirectionType, distance: int, velocity=75):
 #  the most important function
 def driver_control():
 
-    lastpressed2= False
+    lastpressed= False
     spining = False
     
     while True:
-
-        lastpressed2= False
 
         forward = controller.axis3.position()
         turn = controller.axis1.position()
@@ -48,9 +46,11 @@ def driver_control():
 
         if -5 < forward < 5:
             forward = 0
-            
+
         if -5 < turn < 5:
             turn = 0
+        
+    
 
         left_speed = forward + turn
         right_speed = forward - turn
@@ -60,7 +60,7 @@ def driver_control():
 
         # intake
        
-        if lastpressed2 == False and controller.buttonR1.pressing():
+        if lastpressed == False and controller.buttonR1.pressing():
             spining = not spining
 
         if spining: 
@@ -68,10 +68,10 @@ def driver_control():
         else:
             intake.stop()
         
-        lastpressed2= controller.buttonR1.pressing()
+        lastpressed= controller.buttonR1.pressing()
 
 
-        wait(10)
+        wait(50)
 
 
 
