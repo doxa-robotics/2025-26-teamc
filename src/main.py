@@ -27,17 +27,15 @@ controller = Controller()
 right1 = Motor(Ports.PORT3, False)
 right2 = Motor(Ports.PORT2, False)
 right3 = Motor(Ports.PORT1, False)
-right4 = Motor(Ports.PORT13, True)
 
 left1 = Motor(Ports.PORT9, True)
 left2 = Motor(Ports.PORT7, True)
 left3 = Motor(Ports.PORT6, True)
-left4 = Motor(Ports.PORT18, False)
 
 
 #  motorgroups
-left=MotorGroup(left1, left2, left3, left4)
-right=MotorGroup(right1, right2, right3, right4)
+left=MotorGroup(left1, left2, left3)
+right=MotorGroup(right1, right2, right3)
 
 inertial = Inertial(Ports.PORT15)
 
@@ -46,11 +44,11 @@ inertial = Inertial(Ports.PORT15)
 
 ################################################################################
 #  used to create a way for the robot to be able to functionably move on its own
-all = DriveTrain(left,right)
-all.set_timeout(4000)
+drivetrain = SmartDrive(left,right, inertial)
+
 
 def move(direction: DirectionType.DirectionType, distance: int, velocity=75):
-    all.drive_for(direction, distance, MM, velocity, RPM)
+    drivetrain.drive_for(direction, distance, MM, velocity, RPM)
 ################################################################################# 
 
 #  the most important function
@@ -94,14 +92,35 @@ def driver_control():
         left.spin(DirectionType.FORWARD, left_speed, VelocityUnits.PERCENT)
         right.spin(DirectionType.FORWARD, right_speed, VelocityUnits.PERCENT)
 
+        left.spin(DirectionType.FORWARD, left_speed, VelocityUnits.PERCENT)
+        right.spin(DirectionType.FORWARD, right_speed, VelocityUnits.PERCENT)
+
+        # intake
+       
+        if lastpressed == False and controller.buttonR1.pressing():
+            spining = not spining
+
+        if spining: 
+            intake.spin(DirectionType.FORWARD, 50, PERCENT)
+        else:
+            intake.stop()
+        
+        lastpressed= controller.buttonR1.pressing()
+
+
+        wait(50)
+
+
         wait(20)
 
-def Auton():
-    move(FORWARD, 300)
+def auton_rightLong():
+    '''score balls on the long goal'''
+    drivetrain.drive_for(FORWARD, 300, MM)
+    drivetrain.turn_for(LEFT, 45, DEGREES)
 
 
     
-Competition(driver_control, Auton)
+Competition(driver_control, auton_rightLong)
 
 
         
