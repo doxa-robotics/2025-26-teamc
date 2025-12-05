@@ -23,7 +23,7 @@ from vex import *
 brain = Brain()
 controller = Controller()
 
-pneumatics = Pneumatics
+pneumatics = Pneumatics(Ports.PORT1)
 
 
 #  motors
@@ -98,17 +98,17 @@ def driver_control():
 
 
     while True:
-        for = controller.axis3.position() # forward/backward joystick
+        forw = controller.axis3.position() # forward/backward joystick
         tur = controller.axis1.position() # right/left joystick
 
         # Deadzone filtering - wont move when the joystick is barely pressed
-        if -5 < for < 5:
-            for = 0
+        if -5 < forw < 5:
+            forw = 0
         if -5 < tur < 5:
             tur = 0
 
         # Apply parabolic scaling from earlier
-        forward = scale_input(for)
+        forward = scale_input(forw)
         turn = scale_input(tur)
 
         # combine forward + turn
@@ -120,8 +120,8 @@ def driver_control():
         # This function prevents the motors from instantly jumping to the target speed.
         # Instead, it gradually moves the current speed toward the target in fixed steps.
         #
-        # Why? Joystick inputs can change very suddenly (e.g., from 0% to 100% in one frame).
-        # If motors followed that instantly, the robot would lurch forward, skid, or stress
+        # Why? Joystick inputs can change very suddenly (e.g., from 0% to 100% in a fast rate).
+        # If motors followed that instantly, the robot would jump forward, skid, or stress
         # its mechanical parts. The limiter smooths this out so the robot feels more controlled.
         #
         # How it works:
@@ -135,7 +135,7 @@ def driver_control():
         #   ... continues until current reaches 50.
         #
         # Effect: acceleration and deceleration happen smoothly over several cycles,
-        # making the robot easier to drive precisely and protecting hardware.
+        # making the robot easier to drive precisely, safely and protects hardware.
         left_actual = slow_rate_limit(left_actual, left_target, step=5)
         right_actual = slow_rate_limit(right_actual, right_target, step=5)
         left_actual = slow_rate_limit(left_actual, left_target, step=5)
@@ -177,7 +177,7 @@ def driver_control():
             if spining: 
                 pneumatics1.open()
             else:
-                pneumatics1.close
+                pneumatics1.close()
           
         lastpressed= controller.buttonR1.pressing()
 
