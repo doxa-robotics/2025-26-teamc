@@ -50,7 +50,7 @@ inertial = Inertial(Ports.PORT15)
 
 '''
 
-def slew_rate_limit(current_speed, target_speed, step=5):
+def slow_rate_limit(current_speed, target_speed, step=5):
     if target_speed > current_speed + step:
         return current_speed + step
     elif target_speed < current_speed - step:
@@ -72,6 +72,11 @@ def move(direction: DirectionType.DirectionType, distance: int, velocity=75):
 def driver_control(): 
     lastpressed= False
     spining= False
+    
+    '''
+    left_actual = 0
+    right_actual = 0
+    '''
 
     while True:
         '''
@@ -91,9 +96,9 @@ def driver_control():
         left_target = forward + turn
         right_target = forward - turn
 
-        # Apply slew limiter for smooth decel
-        left_actual = slew_rate_limit(left_actual, left_target, step=5)
-        right_actual = slew_rate_limit(right_actual, right_target, step=5)
+        # Apply slow limiter for smooth decel
+        left_actual = slow_rate_limit(left_actual, left_target, step=5)
+        right_actual = slow_rate_limit(right_actual, right_target, step=5)
 
         left.spin(DirectionType.FORWARD, left_actual, VelocityUnits.PERCENT)
         right.spin(DirectionType.FORWARD, right_actual, VelocityUnits.PERCENT)

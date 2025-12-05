@@ -1,5 +1,5 @@
 import math
-#import * from vex
+import * from vex
 
 def s_arc(radius_right_mm, angle_right_deg, 
                      radius_left_mm, angle_left_deg, speed_percent=70):
