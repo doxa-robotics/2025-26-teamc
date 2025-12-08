@@ -1,21 +1,3 @@
-# ----------------------------------------------------------------------------- #
-#                                                                               #        
-#    Project:        Right Arcade Control                                       #
-#    Module:         main.py                                                    #
-#    Author:         VEX                                                        #
-#    Created:        Fri Aug 05 2022                                            #
-#    Description:    This example will use the right X/Y Controller             #
-#                    axis to control the Clawbot.                               #
-#                                                                               #                                                                          
-#    Configuration:  V5 Clawbot (Individual Motors)                             #
-#                    Controller                                                 #
-#                    Claw Motor in Port 3                                       #
-#                    Arm Motor in Port 8                                        #
-#                    Left Motor in Port 1                                       #
-#                    Right Motor in Port 10                                     #
-#                                                                               #                                                                          
-# ----------------------------------------------------------------------------- #
-
 from vex import *
 #import math
 
@@ -23,31 +5,35 @@ from vex import *
 brain = Brain()
 controller = Controller()
 
-pneumatics = Pneumatics(Ports.PORT1)
-
+#pneumatic
+match_load = Pneumatics(Ports.PORT1)
 
 #  motors
 right1 = Motor(Ports.PORT3, False)
 right2 = Motor(Ports.PORT2, False)
 right3 = Motor(Ports.PORT1, False)
-
 left1 = Motor(Ports.PORT9, True)
 left2 = Motor(Ports.PORT7, True)
 left3 = Motor(Ports.PORT6, True)
 
-pneumatics1 = Pneumatics(brain.three_wire_port.a)
-
-intake= Motor(Ports.PORT17, True)
+#intake
+intake_1= Motor(Ports.PORT17, True)
+intake_2 = Motor(Ports.PORT10, True)
 
 #  motorgroups
-left=MotorGroup(left1, left2, left3)
-right=MotorGroup(right1, right2, right3)
+left = MotorGroup(left1, left2, left3)
+right = MotorGroup(right1, right2, right3)
+intake = MotorGroup(intake_1, intake_2)
 
+#inertial
 inertial = Inertial(Ports.PORT15)
+
+# Smartdrive for auton
+drivetrain = SmartDrive(left,right, inertial)
 
 # for jinwoong to look at
 '''
-####################################################################
+######################################################################################################
 # Scale input function
 # This takes the joystick input (x) and applies a parabolic scaling, 
 # except the from -infinity to 0, the outputs are negative to allow robot to turn back.
@@ -55,19 +41,19 @@ inertial = Inertial(Ports.PORT15)
 # which makes small joystick movements more precise while still allowing
 # full speed when holding the joystick all the way.
 # Example: input 50 → (50 * abs(50)) / 100 = 25
-####################################################################
+######################################################################################################
 
 #def scale_input(x):
     #return (x * abs(x)) / 100 
-
-####################################################################
+######################################################################################################
 # Fast rate limiter function
 # This prevents the motor speed from changing too abruptly.
 # It gradually steps the current speed(the value of this can be seen later in the driver control)
 # toward the target speed (the value can also be seen later)
 # by a fixed increment, or step, which is by default = 5. This smooths acceleration/deceleration
 # so the robot doesn't jerk  when the joystick changes suddenly.
-####################################################################
+######################################################################################################
+
 def fast_rate_limit(current_speed, target_speed, step=5):
     if target_speed > current_speed + step:
         return current_speed + step
@@ -77,14 +63,6 @@ def fast_rate_limit(current_speed, target_speed, step=5):
         return target_speed
 
 '''
-################################################################################
-#  used to create a way for the robot to be able to functionably move on its own
-drivetrain = SmartDrive(left,right, inertial)
-
-
-def move(direction: DirectionType.DirectionType, distance: int, velocity=75):
-    drivetrain.drive_for(direction, distance, MM, velocity, RPM)
-################################################################################# 
 
 #  the most important function
 def driver_control(): 
@@ -146,7 +124,7 @@ def driver_control():
     '''
 
     lastpressed= False
-    spining= False
+    spinning= False
 
     while True:
         forward = controller.axis3.position()
@@ -166,30 +144,37 @@ def driver_control():
         else:
             intake.stop()
 
-
         left.spin(DirectionType.FORWARD, left_speed, VelocityUnits.PERCENT)
         right.spin(DirectionType.FORWARD, right_speed, VelocityUnits.PERCENT)
 
         # intake
-       
         if lastpressed == False and controller.buttonR1.pressing():
-            spining = not spining
-            if spining: 
-                pneumatics1.open()
+            spinning = not spinning
+            if spinning: 
+                match_load.open()
             else:
-                pneumatics1.close()
+                match_load.close()
           
         lastpressed= controller.buttonR1.pressing()
 
         wait(50)
 
+#auton for later
 def auton_rightLong():
-    '''score balls on the long goal'''
-    drivetrain.drive_for(FORWARD, 300, MM)
-    drivetrain.turn_for(LEFT, 45, DEGREES)   
+    intake.spin(FORWARD, 100, PERCENT)
+    drivetrain.drive_for(FORWARD, 500, MM)
+    wait(50, MSEC) 
+    intake.stop()
+    drivetrain.turn_for(LEFT, 100, DEGREES)            
+    drivetrain.drive_for(REVERSE, 240, MM)
+    intake.spin(FORWARD, 100, PERCENT)
+    wait(200, MSEC)
+    intake.stop()
+    wait(50, MSEC)
+    drivetrain.turn_for(RIGHT, 35 , DEGREES)
 
 
-    
+ 
 Competition(driver_control, auton_rightLong)
 
 
