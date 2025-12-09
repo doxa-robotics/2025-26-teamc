@@ -1,14 +1,14 @@
 from vex import *
 #import math
 
-#  intitializing the important stuff
+#intitializing the important stuff
 brain = Brain()
 controller = Controller()
 
 #pneumatic
 match_load = Pneumatics(Ports.PORT1)
 
-#  motors
+#motors
 right1 = Motor(Ports.PORT3, False)
 right2 = Motor(Ports.PORT2, False)
 right3 = Motor(Ports.PORT1, False)
@@ -20,7 +20,7 @@ left3 = Motor(Ports.PORT6, True)
 intake_1= Motor(Ports.PORT17, True)
 intake_2 = Motor(Ports.PORT10, True)
 
-#  motorgroups
+#motorgroups
 left = MotorGroup(left1, left2, left3)
 right = MotorGroup(right1, right2, right3)
 intake = MotorGroup(intake_1, intake_2)
@@ -124,7 +124,7 @@ def driver_control():
     '''
 
     lastpressed= False
-    spinning= False
+    togle = False
 
     while True:
         forward = controller.axis3.position()
@@ -139,25 +139,29 @@ def driver_control():
         left_speed = forward + turn
         right_speed = forward - turn
 
-        if controller.buttonR1.pressing():
-            intake.spin(DirectionType.FORWARD, 100, RPM)
-        else:
-            intake.stop()
-
         left.spin(DirectionType.FORWARD, left_speed, VelocityUnits.PERCENT)
         right.spin(DirectionType.FORWARD, right_speed, VelocityUnits.PERCENT)
 
-        # intake
+        if controller.buttonR1.pressing():
+            intake.spin(FORWARD, 100, PERCENT)
+        elif controller.buttonL1.pressing():
+            intake.spin(REVERSE, 100, PERCENT)
+        else:
+            intake.stop()
+
+        # pneumatic
         if lastpressed == False and controller.buttonR1.pressing():
-            spinning = not spinning
-            if spinning: 
+            togle = not togle
+            if togle: 
                 match_load.open()
             else:
-                match_load.close()
-          
-        lastpressed= controller.buttonR1.pressing()
+                match_load.close()         
+        lastpressed = controller.buttonR1.pressing()
 
         wait(50)
+
+
+
 
 #auton for later
 def auton_rightLong():
