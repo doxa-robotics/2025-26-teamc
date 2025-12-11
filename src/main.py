@@ -9,12 +9,12 @@ controller = Controller()
 match_load = Pneumatics(Ports.PORT1)
 
 #motors
-right1 = Motor(Ports.PORT3, False)
-right2 = Motor(Ports.PORT2, False)
+right1 = Motor(Ports.PORT2, False)
+right2 = Motor(Ports.PORT11, False)
 right3 = Motor(Ports.PORT1, False)
-left1 = Motor(Ports.PORT9, True)
-left2 = Motor(Ports.PORT7, True)
-left3 = Motor(Ports.PORT6, True)
+left1 = Motor(Ports.PORT10, True)
+left2 = Motor(Ports.PORT9, True)
+left3 = Motor(Ports.PORT8, True)
 
 #intake
 intake_1= Motor(Ports.PORT17, True)
@@ -141,7 +141,7 @@ def driver_control():
 
         left.spin(DirectionType.FORWARD, left_speed, VelocityUnits.PERCENT)
         right.spin(DirectionType.FORWARD, right_speed, VelocityUnits.PERCENT)
-
+        #0.35 torque
         if controller.buttonR1.pressing():
             intake.spin(FORWARD, 100, PERCENT)
         elif controller.buttonL1.pressing():
