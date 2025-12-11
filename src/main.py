@@ -18,12 +18,16 @@ left3 = Motor(Ports.PORT8, True)
 
 #intake
 intake_1= Motor(Ports.PORT17, True)
-intake_2 = Motor(Ports.PORT10, True)
+
+#outake
+outtake = Motor(Ports.PORT13)
 
 #motorgroups
 left = MotorGroup(left1, left2, left3)
 right = MotorGroup(right1, right2, right3)
-intake = MotorGroup(intake_1, intake_2)
+intake = MotorGroup(intake_1)
+
+
 
 #inertial
 inertial = Inertial(Ports.PORT15)
@@ -141,27 +145,32 @@ def driver_control():
 
         left.spin(DirectionType.FORWARD, left_speed, VelocityUnits.PERCENT)
         right.spin(DirectionType.FORWARD, right_speed, VelocityUnits.PERCENT)
-        #0.35 torque
+
+        #0.35 torque according to internet
         if controller.buttonR1.pressing():
             intake.spin(FORWARD, 100, PERCENT)
         elif controller.buttonL1.pressing():
             intake.spin(REVERSE, 100, PERCENT)
         else:
             intake.stop()
+        
+        if controller.buttonA.pressing():
+            outtake.spin(FORWARD, 100, PERCENT)
+        elif controller.buttonRight.pressing():
+            outtake.spin(REVERSE, 100, PERCENT)
+        else:
+            outtake.stop()
 
-        # pneumatic
-        if lastpressed == False and controller.buttonR1.pressing():
+        # match load pneumatic
+        if lastpressed == False and controller.buttonB.pressing():
             togle = not togle
             if togle: 
                 match_load.open()
             else:
                 match_load.close()         
-        lastpressed = controller.buttonR1.pressing()
+        lastpressed = controller.buttonB.pressing()
 
         wait(50)
-
-
-
 
 #auton for later
 def auton_rightLong():
