@@ -6,28 +6,26 @@ brain = Brain()
 controller = Controller()
 
 #pneumatic
-match_load = Pneumatics(Ports.PORT1)
+match_load = Pneumatics(brain.three_wire_port.b)
 
 #motors
 right1 = Motor(Ports.PORT2, False)
 right2 = Motor(Ports.PORT11, False)
-right3 = Motor(Ports.PORT1, False)
-left1 = Motor(Ports.PORT10, True)
+right3 = Motor(Ports.PORT1, True)
+left1 = Motor(Ports.PORT10, False)
 left2 = Motor(Ports.PORT9, True)
-left3 = Motor(Ports.PORT8, True)
+left3 = Motor(Ports.PORT20, True)
 
 #intake
-intake_1= Motor(Ports.PORT17, True)
+intake_1= Motor(Ports.PORT8, True)
 
 #outake
-outtake = Motor(Ports.PORT13)
+outtake = Motor(Ports.PORT3)
 
 #motorgroups
 left = MotorGroup(left1, left2, left3)
 right = MotorGroup(right1, right2, right3)
 intake = MotorGroup(intake_1)
-
-
 
 #inertial
 inertial = Inertial(Ports.PORT15)
@@ -126,7 +124,7 @@ def driver_control():
         left.spin(DirectionType.FORWARD, left_actual, VelocityUnits.PERCENT)
         right.spin(DirectionType.FORWARD, right_actual, VelocityUnits.PERCENT)
     '''
-
+#cp???
     lastpressed= False
     togle = False
 
@@ -154,14 +152,15 @@ def driver_control():
         else:
             intake.stop()
         
-        if controller.buttonA.pressing():
+        if controller.buttonRight.pressing():
             outtake.spin(FORWARD, 100, PERCENT)
-        elif controller.buttonRight.pressing():
+        elif controller.buttonA.pressing():
             outtake.spin(REVERSE, 100, PERCENT)
         else:
             outtake.stop()
 
         # match load pneumatic
+
         if lastpressed == False and controller.buttonB.pressing():
             togle = not togle
             if togle: 
@@ -191,4 +190,7 @@ def auton_rightLong():
 Competition(driver_control, auton_rightLong)
 
 
-        
+#robotics is cool sometimes
+#idk
+#i dont like band
+#i like cp i watched chris paul play basketball

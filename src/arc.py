@@ -30,3 +30,12 @@ def s_arc(radius_right_mm, angle_right_deg,
     left_motor.spin_for(FORWARD, left_distance_l, MM, velocity=left_speed_l, wait=False)
     right_motor.spin_for(FORWARD, right_distance_l, MM, velocity=right_speed_l)
 
+def pid_control(target, current, prev_error, integral, dt):
+    error = target - current
+    integral += error * dt              # integral term
+    derivative = (error - prev_error) / dt  # derivative term
+    
+    kP, kI, kD = 0.5, 0.1, 0.05
+    output = kP*error + kI*integral + kD*derivative
+    
+    return output, error, integral
