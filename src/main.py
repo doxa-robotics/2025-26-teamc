@@ -17,7 +17,7 @@ left2 = Motor(Ports.PORT9, True)
 left3 = Motor(Ports.PORT20, True)
 
 #intake
-intake_1= Motor(Ports.PORT8, True)
+intake = Motor(Ports.PORT8, True)
 
 #outake
 outtake = Motor(Ports.PORT3)
@@ -25,13 +25,12 @@ outtake = Motor(Ports.PORT3)
 #motorgroups
 left = MotorGroup(left1, left2, left3)
 right = MotorGroup(right1, right2, right3)
-intake = MotorGroup(intake_1)
 
 #inertial
 inertial = Inertial(Ports.PORT15)
 
 # Smartdrive for auton
-drivetrain = SmartDrive(left,right, inertial)
+drivetrain = SmartDrive(left, right, inertial)
 
 # for jinwoong to look at
 '''
@@ -173,20 +172,57 @@ def driver_control():
 
 #auton for later
 def auton_rightLong():
+    # might have to set velocity later
+    intake.spin(FORWARD, 100, PERCENT)
+    drivetrain.drive_for(FORWARD, 500, MM) # maybe 528
+    wait(50, MSEC) 
+    intake.stop()
+    wait(30, MSEC)
+    drivetrain.turn_for(LEFT, 100, DEGREES)            
+    drivetrain.drive_for(FORWARD, 100, MM)
+    intake.spin(REVERSE, 100, PERCENT)
+    wait(200, MSEC)
+    intake.stop()
+    wait(50, MSEC)
+    drivetrain.drive_for(FORWARD, 600, MM)
+    drivetrain.turn_for(LEFT, 135 , DEGREES)
+    intake.spin(FORWARD, 100, PERCENT)
+    match_load.open()
+    drivetrain.drive_for(FORWARD, 150, MM)
+    wait(500, MSEC)
+    intake.stop
+    drivetrain.drive_for(REVERSE, 50, MM)
+    match_load.close()
+    wait(30, MSEC)
+    drivetrain.drive_for(REVERSE, 600, MM)
+    outtake.spin(FORWARD, 100, PERCENT)
+
+def auton_leftLong():
     intake.spin(FORWARD, 100, PERCENT)
     drivetrain.drive_for(FORWARD, 500, MM)
     wait(50, MSEC) 
     intake.stop()
-    drivetrain.turn_for(LEFT, 100, DEGREES)            
-    drivetrain.drive_for(REVERSE, 240, MM)
-    intake.spin(FORWARD, 100, PERCENT)
+    wait(30, MSEC)
+    drivetrain.turn_for(LEFT, 120, DEGREES)            
+    drivetrain.drive_for(REVERSE, 100, MM)
+    outtake.spin(FORWARD, 100, PERCENT)
     wait(200, MSEC)
-    intake.stop()
+    outtake.stop()
     wait(50, MSEC)
-    drivetrain.turn_for(RIGHT, 35 , DEGREES)
+    drivetrain.drive_for(FORWARD, 600, MM)
+    drivetrain.turn_for(LEFT, 45 , DEGREES)
+    intake.spin(FORWARD, 100, PERCENT)
+    match_load.open()
+    drivetrain.drive_for(FORWARD, 150, MM)
+    wait(500, MSEC)
+    intake.stop
+    drivetrain.drive_for(REVERSE, 50, MM)
+    match_load.close()
+    wait(30, MSEC)
+    drivetrain.drive_for(REVERSE, 600, MM)
+    outtake.spin(FORWARD, 100, PERCENT)
+   
 
-
- 
 Competition(driver_control, auton_rightLong)
 
 
