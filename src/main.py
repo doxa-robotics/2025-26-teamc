@@ -32,7 +32,7 @@ inertial = Inertial(Ports.PORT15)
 drivetrain = SmartDrive(left, right, inertial)
 
 # for jinwoong to look at
-'''
+
 ######################################################################################################
 # Scale input function
 # This takes the joystick input (x) and applies a parabolic scaling, 
@@ -43,8 +43,8 @@ drivetrain = SmartDrive(left, right, inertial)
 # Example: input 50 → (50 * abs(50)) / 100 = 25
 ######################################################################################################
 
-#def scale_input(x):
-    #return (x * abs(x)) / 100 
+def scale_input(x):
+    return (x * abs(x)) / 100 
 ######################################################################################################
 # Fast rate limiter function
 # This prevents the motor speed from changing too abruptly.
@@ -54,7 +54,7 @@ drivetrain = SmartDrive(left, right, inertial)
 # so the robot doesn't jerk  when the joystick changes suddenly.
 ######################################################################################################
 
-def fast_rate_limit(current_speed, target_speed, step=5):
+def slow_rate_limit(current_speed, target_speed, step=5):
     if target_speed > current_speed + step:
         return current_speed + step
     elif target_speed < current_speed - step:
@@ -62,15 +62,15 @@ def fast_rate_limit(current_speed, target_speed, step=5):
     else:
         return target_speed
 
-'''
+
 
 #  the most important function
 def driver_control(): 
     #for jinwoong to look at
-    '''
+   
     # Track button state and motor speeds
     lastpressed = False  # state toggle (i think??)
-    spining = False  # toggle on or off pneumatics
+    togle = False  # toggle on or off pneumatics
     left_actual = 0  # set default speed of left motors at start
     right_actual = 0  # cset default speed of right motors at start
 
@@ -121,27 +121,8 @@ def driver_control():
 
         left.spin(DirectionType.FORWARD, left_actual, VelocityUnits.PERCENT) 
         right.spin(DirectionType.FORWARD, right_actual, VelocityUnits.PERCENT)
-    '''
 #cp???
-    lastpressed= False
-    togle = False
-
-    while True:
-        forward = controller.axis3.position()
-        turn = controller.axis1.position()*0.9
-
-        if -5 < forward < 5:
-            forward = 0
-
-        if -5 < turn < 5:
-            turn = 0
-        
-        left_speed = forward + turn
-        right_speed = forward - turn
-
-        left.spin(DirectionType.FORWARD, left_speed, VelocityUnits.PERCENT)
-        right.spin(DirectionType.FORWARD, right_speed, VelocityUnits.PERCENT)
-
+    
         #0.35 torque according to internet
         if controller.buttonR1.pressing():
             intake.spin(FORWARD, 100, PERCENT)
