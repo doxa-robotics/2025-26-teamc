@@ -1,12 +1,11 @@
 from vex import *
-#import math
 
 #intitializing the important stuff
 brain = Brain()
 controller = Controller()
 
 #pneumatic
-match_load = Pneumatics(brain.three_wire_port.b)
+match_load = Pneumatics(brain.three_wire_port.c)
 
 #motors
 right1 = Motor(Ports.PORT2, False)
@@ -120,7 +119,7 @@ def driver_control():
         left_actual = slow_rate_limit(left_actual, left_target, step=5)
         right_actual = slow_rate_limit(right_actual, right_target, step=5)
 
-        left.spin(DirectionType.FORWARD, left_actual, VelocityUnits.PERCENT)
+        left.spin(DirectionType.FORWARD, left_actual, VelocityUnits.PERCENT) 
         right.spin(DirectionType.FORWARD, right_actual, VelocityUnits.PERCENT)
     '''
 #cp???
@@ -129,7 +128,7 @@ def driver_control():
 
     while True:
         forward = controller.axis3.position()
-        turn = controller.axis1.position()
+        turn = controller.axis1.position()*0.9
 
         if -5 < forward < 5:
             forward = 0
@@ -159,7 +158,6 @@ def driver_control():
             outtake.stop()
 
         # match load pneumatic
-
         if lastpressed == False and controller.buttonB.pressing():
             togle = not togle
             if togle: 
@@ -224,6 +222,9 @@ def auton_leftLong():
    
 
 Competition(driver_control, auton_rightLong)
+
+
+
 
 
 #robotics is cool sometimes
