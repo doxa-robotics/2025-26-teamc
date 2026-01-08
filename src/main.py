@@ -31,8 +31,6 @@ inertial = Inertial(Ports.PORT5)
 # Smartdrive for auton
 drivetrain = SmartDrive(left, right, inertial)
 
-# for jinwoong to look at
-
 ######################################################################################################
 # Scale input function
 # This takes the joystick input (x) and applies a parabolic scaling, 
