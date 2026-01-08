@@ -64,7 +64,7 @@ def slow_rate_limit(current_speed, target_speed, step=5):
 
 #  the most important function
 def driver_control(): 
-    #for jinwoong to look at
+
    
     # Track button state and motor speeds
     lastpressed = False  # state toggle (i think??)
@@ -151,6 +151,7 @@ def driver_control():
 def auton_rightLong():
     # might have to set velocity later
     intake.spin(FORWARD, 100, PERCENT)
+    match_load.open()
     drivetrain.drive_for(FORWARD, 500, MM) # maybe 528
     wait(50, MSEC) 
     intake.stop()
@@ -161,10 +162,10 @@ def auton_rightLong():
     wait(200, MSEC)
     intake.stop()
     wait(50, MSEC)
-    drivetrain.drive_for(FORWARD, 600, MM)
-    drivetrain.turn_for(LEFT, 135 , DEGREES)
+    drivetrain.drive_for(REVERSE, 600, MM)
+    drivetrain.turn_for(LEFT, 135, DEGREES)
     intake.spin(FORWARD, 100, PERCENT)
-    match_load.open()
+    match_load.close()
     drivetrain.drive_for(FORWARD, 150, MM)
     wait(500, MSEC)
     intake.stop
