@@ -26,7 +26,7 @@ left = MotorGroup(left1, left2, left3)
 right = MotorGroup(right1, right2, right3)
 
 #inertial
-inertial = Inertial(Ports.PORT15)
+inertial = Inertial(Ports.PORT5)
 
 # Smartdrive for auton
 drivetrain = SmartDrive(left, right, inertial)
