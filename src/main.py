@@ -24,6 +24,7 @@ outtake = Motor(Ports.PORT3)
 #motorgroups
 left = MotorGroup(left1, left2, left3)
 right = MotorGroup(right1, right2, right3)
+inouttake = MotorGroup(intake, outtake)
 
 #inertial
 inertial = Inertial(Ports.PORT5)
@@ -52,7 +53,7 @@ def scale_input(x):
 # so the robot doesn't jerk  when the joystick changes suddenly.
 ######################################################################################################
 
-def slow_rate_limit(current_speed, target_speed, step=5):
+def slow_rate_limit(current_speed, target_speed, step=10):
     if target_speed > current_speed + step:
         return current_speed + step
     elif target_speed < current_speed - step:
@@ -60,12 +61,9 @@ def slow_rate_limit(current_speed, target_speed, step=5):
     else:
         return target_speed
 
-
-
 #  the most important function
 def driver_control(): 
 
-   
     # Track button state and motor speeds
     lastpressed = False  # state toggle (i think??)
     togle = False  # toggle on or off pneumatics
@@ -75,7 +73,7 @@ def driver_control():
 
     while True:
         forw = controller.axis3.position() # forward/backward joystick
-        tur = controller.axis1.position() # right/left joystick
+        tur = controller.axis1.position() * 0.85 # right/left joystick
 
         # Deadzone filtering - wont move when the joystick is barely pressed
         if -5 < forw < 5:
@@ -112,10 +110,8 @@ def driver_control():
         #
         # Effect: acceleration and deceleration happen smoothly over several cycles,
         # making the robot easier to drive precisely, safely and protects hardware.
-        left_actual = slow_rate_limit(left_actual, left_target, step=5)
-        right_actual = slow_rate_limit(right_actual, right_target, step=5)
-        left_actual = slow_rate_limit(left_actual, left_target, step=5)
-        right_actual = slow_rate_limit(right_actual, right_target, step=5)
+        left_actual = slow_rate_limit(left_actual, left_target, step=10)
+        right_actual = slow_rate_limit(right_actual, right_target, step=10)
 
         left.spin(DirectionType.FORWARD, left_actual, VelocityUnits.PERCENT) 
         right.spin(DirectionType.FORWARD, right_actual, VelocityUnits.PERCENT)
@@ -151,31 +147,40 @@ def driver_control():
 def auton_rightLong():
     # might have to set velocity later
     intake.spin(FORWARD, 100, PERCENT)
-    match_load.open()
-    drivetrain.drive_for(FORWARD, 500, MM) # maybe 528
-    wait(50, MSEC) 
+    drivetrain.drive_for(FORWARD, 524, MM) # maybe 528
+    wait(400, MSEC) 
     intake.stop()
-    wait(30, MSEC)
-    drivetrain.turn_for(LEFT, 100, DEGREES)            
-    drivetrain.drive_for(FORWARD, 100, MM)
+    wait(100, MSEC)
+    drivetrain.turn_for(LEFT, 73, DEGREES)            
+    drivetrain.drive_for(FORWARD, 180, MM)
     intake.spin(REVERSE, 100, PERCENT)
-    wait(200, MSEC)
-    intake.stop()
+    wait(2000, MSEC)
+    intake.stop() 
     wait(50, MSEC)
-    drivetrain.drive_for(REVERSE, 600, MM)
-    drivetrain.turn_for(LEFT, 135, DEGREES)
+    drivetrain.drive_for(REVERSE, 654, MM) 
+    drivetrain.turn_for(LEFT, 140, DEGREES)
     intake.spin(FORWARD, 100, PERCENT)
-    match_load.close()
-    drivetrain.drive_for(FORWARD, 150, MM)
-    wait(500, MSEC)
+    match_load.open()
+    drivetrain.drive_for(FORWARD, 300, MM)
+    wait(1000, MSEC)
     intake.stop
-    drivetrain.drive_for(REVERSE, 50, MM)
-    match_load.close()
-    wait(30, MSEC)
     drivetrain.drive_for(REVERSE, 600, MM)
-    outtake.spin(FORWARD, 100, PERCENT)
+    inouttake.spin(FORWARD, 100, PERCENT)
 
 def auton_leftLong():
+    drivetrain.drive_for(FORWARD, 500, MM)
+    drivetrain.turn_for(LEFT, 91, DEGREES)
+    drivetrain.drive_for(REVERSE, 50, MM)
+    match_load.open()
+    intake.spin(FORWARD, 100, PERCENT)
+    drivetrain.drive_for(FORWARD, 200, MM)
+    wait(1500, MSEC)
+    intake.stop()
+    drivetrain.drive_for(REVERSE, 690, MM)
+    inouttake.spin(FORWARD, 100, PERCENT)
+    
+
+    '''
     intake.spin(FORWARD, 100, PERCENT)
     drivetrain.drive_for(FORWARD, 500, MM)
     wait(50, MSEC) 
@@ -199,7 +204,7 @@ def auton_leftLong():
     wait(30, MSEC)
     drivetrain.drive_for(REVERSE, 600, MM)
     outtake.spin(FORWARD, 100, PERCENT)
-   
+    '''
 
 Competition(driver_control, auton_rightLong)
 
