@@ -73,7 +73,7 @@ def driver_control():
 
     while True:
         forw = controller.axis3.position() # forward/backward joystick
-        tur = controller.axis1.position() * 0.85 # right/left joystick
+        tur = controller.axis1.position() * 0.72 # right/left joystick
 
         # Deadzone filtering - wont move when the joystick is barely pressed
         if -5 < forw < 5:
@@ -110,8 +110,8 @@ def driver_control():
         #
         # Effect: acceleration and deceleration happen smoothly over several cycles,
         # making the robot easier to drive precisely, safely and protects hardware.
-        left_actual = slow_rate_limit(left_actual, left_target, step=10)
-        right_actual = slow_rate_limit(right_actual, right_target, step=10)
+        left_actual = slow_rate_limit(left_actual, left_target, step=20)
+        right_actual = slow_rate_limit(right_actual, right_target, step=20)
 
         left.spin(DirectionType.FORWARD, left_actual, VelocityUnits.PERCENT) 
         right.spin(DirectionType.FORWARD, right_actual, VelocityUnits.PERCENT)
@@ -171,7 +171,9 @@ def auton_leftLong():
     drivetrain.drive_for(FORWARD, 500, MM)
     drivetrain.turn_for(LEFT, 91, DEGREES)
     drivetrain.drive_for(REVERSE, 50, MM)
+    wait(100, MSEC)
     match_load.open()
+    drivetrain.set_drive_velocity(85, RPM)
     intake.spin(FORWARD, 100, PERCENT)
     drivetrain.drive_for(FORWARD, 200, MM)
     wait(1500, MSEC)
@@ -206,7 +208,7 @@ def auton_leftLong():
     outtake.spin(FORWARD, 100, PERCENT)
     '''
 
-Competition(driver_control, auton_rightLong)
+Competition(driver_control, auton_leftLong)
 
 
 
