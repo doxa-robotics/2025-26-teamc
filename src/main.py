@@ -7,6 +7,9 @@ controller = Controller()
 #pneumatic
 match_load = Pneumatics(brain.three_wire_port.c)
 
+#desco
+descore = Pneumatics(brain.three_wire_port.f)
+
 #motors
 right1 = Motor(Ports.PORT2, False)
 right2 = Motor(Ports.PORT11, False)
@@ -66,7 +69,9 @@ def driver_control():
 
     # Track button state and motor speeds
     lastpressed = False  # state toggle (i think??)
+    last_pressed_2 = False
     togle = False  # toggle on or off pneumatics
+    toggle_2 = False
     left_actual = 0  # set default speed of left motors at start
     right_actual = 0  # set default speed of right motors at start
 
@@ -141,85 +146,172 @@ def driver_control():
                 match_load.close()         
         lastpressed = controller.buttonB.pressing()
 
+        if controller.buttonDown.pressing() and last_pressed_2 == False:
+            toggle_2 = not toggle_2
+            if toggle_2:
+                descore.open()
+            else:
+                descore.close()
+        last_pressed_2 = controller.buttonDown.pressing()
+
         wait(50)
 
 #auton for later
 def auton_rightLong():
     # might have to set velocity later
     intake.spin(FORWARD, 100, PERCENT)
-    drivetrain.drive_for(FORWARD, 524, MM) # maybe 528
-    wait(600, MSEC) 
+    drivetrain.drive_for(FORWARD, 454, MM) # maybe 528
+    wait(800, MSEC) 
     intake.stop()
     wait(100, MSEC)
-    drivetrain.turn_for(LEFT, 71, DEGREES)            
-    drivetrain.drive_for(FORWARD, 158, MM)
-    intake.spin(REVERSE, 100, PERCENT)
+    drivetrain.turn_for(LEFT, 52, DEGREES)           
+    drivetrain.drive_for(FORWARD, 139, MM)
+    intake.spin(REVERSE, 85, PERCENT)
     wait(2500, MSEC)
-    intake.stop() 
+    intake.stop()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
     wait(50, MSEC)
     intake.spin(FORWARD, 100, PERCENT)
-    drivetrain.drive_for(REVERSE, 654, MM) 
-    drivetrain.turn_for(LEFT, 125, DEGREES)
-    wait(100, MSEC)
+    drivetrain.drive_for(REVERSE, 654, MM)
+    intake.stop() 
+    drivetrain.turn_for(LEFT, 145, DEGREES)
+    wait(200, MSEC)
     match_load.open()
+    intake.spin(FORWARD, 100, PERCENT)
     drivetrain.set_drive_velocity(85, RPM)
+    wait(200, MSEC)
     drivetrain.drive_for(FORWARD, 300, MM) 
-    wait(1000, MSEC)
-    drivetrain.drive_for(REVERSE, 600, MM)
-    outtake.spin(FORWARD, 100, PERCENT)
+    wait(1500, MSEC)
+    intake.stop()
+    drivetrain.drive_for(REVERSE, 550, MM)
+    intake.spin(FORWARD, 100, PERCENT)
+    outtake.spin(REVERSE, 100, PERCENT)
+    wait(4000, MSEC)
+    intake.stop()
+    outtake.stop() 
 
 def auton_leftLong():
-    drivetrain.drive_for(FORWARD, 548, MM)
-    drivetrain.turn_for(LEFT, 91, DEGREES)
+    drivetrain.drive_for(FORWARD, 556, MM)
+    drivetrain.turn_for(LEFT, 90, DEGREES)
     drivetrain.drive_for(REVERSE, 100, MM)
     wait(100, MSEC)
     match_load.open()
     drivetrain.set_drive_velocity(75, RPM)
     wait(500, MSEC)
-    intake.spin(FORWARD, 100, PERCENT)
+    intake.spin(FORWARD, 150, PERCENT)
     drivetrain.drive_for(FORWARD, 240, MM)
-    wait(1200, MSEC)
-    wait(100, MSEC)
-    drivetrain.drive_for(REVERSE, 500, MM)
-    outtake.spin_for(FORWARD, 100, PERCENT)
+    wait(1500, MSEC)
+    intake.stop()
+    drivetrain.turn_for(RIGHT, 1, DEGREES)
+    drivetrain.drive_for(REVERSE, 476, MM)
+    intake.spin(FORWARD, 100, PERCENT)
+    outtake.spin(REVERSE, 100, PERCENT)
+    wait(4000, MSEC)
+    intake.stop()
+    outtake.stop() 
+
+
 
 def testauton():
-    drivetrain.drive_for(FORWARD, 30, MM)
+    pass
 
-
-    '''
+def Julie_auton():
     intake.spin(FORWARD, 100, PERCENT)
-    drivetrain.drive_for(FORWARD, 500, MM)
-    wait(50, MSEC) 
-    intake.stop()
-    wait(30, MSEC)
-    drivetrain.turn_for(LEFT, 120, DEGREES)            
-    drivetrain.drive_for(REVERSE, 100, MM)
-    outtake.spin(FORWARD, 100, PERCENT)
-    wait(200, MSEC)
-    outtake.stop()
-    wait(50, MSEC)
     drivetrain.drive_for(FORWARD, 600, MM)
-    drivetrain.turn_for(LEFT, 45 , DEGREES)
-    intake.spin(FORWARD, 100, PERCENT)
-    match_load.open()
-    drivetrain.drive_for(FORWARD, 150, MM)
-    wait(500, MSEC)
-    intake.stop
-    drivetrain.drive_for(REVERSE, 50, MM)
-    match_load.close()
-    wait(30, MSEC)
+    intake.stop()
+    wait(100)
+    drivetrain.turn_for(LEFT, 90, DEGREES)
+    drivetrain.drive_for(FORWARD, 25, MM)
+    intake.spin(REVERSE, 100, PERCENT)
+    wait(100)
     drivetrain.drive_for(REVERSE, 600, MM)
+    drivetrain.turn_for(LEFT, 180, DEGREES)
+    wait(100)
+    intake.spin(FORWARD, 100, PERCENT)
+    drivetrain.drive_for(FORWARD, 60, MM)
+    intake.stop()
+    drivetrain.turn_for(RIGHT, 45, DEGREES)
+    drivetrain.drive_for(FORWARD, 200, MM)
+    wait(100)
+    drivetrain.turn_for(LEFT, 270, DEGREES)
+    drivetrain.drive_for(FORWARD, 180, MM)
+    intake.spin(FORWARD, 100, PERCENT)
+    intake.stop()
+    wait(100)
+    drivetrain.drive_for(REVERSE, 180, MM)
+    inouttake.spin(FORWARD, 100, PERCENT)
+    drivetrain.turn_for(RIGHT, 90, DEGREES)
+    drivetrain.drive_for(FORWARD, 800, MM)
+    wait(100)
+    drivetrain.turn_for(RIGHT, 90, DEGREES)
+    drivetrain.drive_for(FORWARD, 80, MM)
+    intake.spin(FORWARD, 100, PERCENT)
+    intake.stop()
+    wait(100)
+    drivetrain.drive_for(REVERSE, 250, MM)
+    intake.spin(FORWARD, 100, PERCENT)
+    intake.stop()
+    drivetrain.drive_for(REVERSE, 20, MM)
+    drivetrain.turn_for(LEFT, 180, DEGREES)
+    wait(100)
+    drivetrain.drive_for(FORWARD, 200, MM)
+    wait(100)
+
+def auton_skill():
+    # might have to set velocity later
+    intake.spin(FORWARD, 100, PERCENT)
+    drivetrain.drive_for(FORWARD, 502, MM) # maybe 528
+    wait(500, MSEC) 
+    intake.stop()
+    wait(100, MSEC)
+    drivetrain.turn_for(LEFT, 68, DEGREES)           
+    drivetrain.drive_for(FORWARD, 135, MM)
+    intake.spin(REVERSE, 85, PERCENT)
+    wait(2500, MSEC)
+    intake.stop()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+    wait(50, MSEC)
+    drivetrain.drive_for(REVERSE, 654, MM) 
+    drivetrain.turn_for(LEFT, 140, DEGREES)
+    wait(200, MSEC)
+    match_load.open()
+    intake.spin(FORWARD, 100, PERCENT)
+    drivetrain.set_drive_velocity(85, RPM)
+    wait(200, MSEC)
+    drivetrain.drive_for(FORWARD, 400, MM)
+    wait(2000, MSEC)
+    intake.stop()
+    wait(20, MSEC)
+    drivetrain.drive_for(REVERSE, 600, MM)
+    intake.spin(FORWARD, 100, PERCENT)
+    outtake.spin(REVERSE, 100, PERCENT)
+    wait(1500, MSEC)
+    intake.stop()
+    outtake.stop()
+    wait(50,MSEC)
+    drivetrain.turn_for(RIGHT, 12, DEGREES)
+    drivetrain.drive_for(FORWARD, 1000, MM)
+    drivetrain.turn_for(LEFT, 66, DEGREES)
+    drivetrain.drive_for(REVERSE, 100, MM)
+    match_load.open()
+    drivetrain.drive_for(FORWARD, 250, MM)
+    intake.spin(FORWARD, 100, PERCENT)
+    wait(2000, MSEC)
+    intake.stop()
+    drivetrain.drive_for(REVERSE, 460, MM)
+    intake.spin(FORWARD, 100, PERCENT)
     outtake.spin(FORWARD, 100, PERCENT)
-    '''
+    wait(2000, MSEC)
+    intake.stop()
+    outtake.stop()
+    drivetrain.turn_for(LEFT, 72, DEGREES)
+    drivetrain.drive_for(FORWARD, 500, MM)
 
-Competition(driver_control, testauton)
 
 
-
-
+Competition(driver_control, auton_rightLong)
 
 #robotics is cool sometimes
 #idk
 #i dont like band
 #i like cp i watched chris paul play basketball
+
+
